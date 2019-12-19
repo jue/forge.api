@@ -1,10 +1,10 @@
-import {Utils} from "../utils/utils";
-import {MarkupExtension} from "./markup.extension";
-import {HeatmapExtension} from "./heatmap.extension";
-import {EventsEmitter} from "../utils/events-emitter";
-import {EventTool} from "../utils/event-tool";
+import { Utils } from "../utils/utils";
+import { MarkupExtension } from "./markup.extension";
+import { HeatmapExtension } from "./heatmap.extension";
+import { EventsEmitter } from "../utils/events-emitter";
+import { EventTool } from "../utils/event-tool";
 
-//import "../extension/markup3d"
+import { Markup3dExtension } from "./markup3d.extension";
 
 export class Seal extends EventsEmitter {
 
@@ -21,6 +21,7 @@ export class Seal extends EventsEmitter {
     this.models = [];
 
     this.markupExtension = null;
+    this.markup3dExtension = null;
     this.heatmapExtension = null;
     this.eventTool = null;
 
@@ -51,15 +52,19 @@ export class Seal extends EventsEmitter {
 
       this.emit('objectTree.created');
 
-      this.viewer.loadExtension(HeatmapExtension.ExtensionId, {max: 1}).then(res => {
+      this.viewer.loadExtension(HeatmapExtension.ExtensionId, { max: 1 }).then(res => {
         this.heatmapExtension = res;
         this.emit('extension.heatmap.loaded', res);
       });
 
       this.viewer.loadExtension(MarkupExtension.ExtensionId).then(res => {
         this.markupExtension = res;
-
         this.emit('extension.markup.loaded', res);
+      });
+
+      this.viewer.loadExtension(Markup3dExtension.ExtensionId).then(res => {
+        this.markup3dExtension = res;
+        this.emit('extension.markup3d.loaded', res);
       });
 
     });
@@ -155,7 +160,7 @@ export class Seal extends EventsEmitter {
           if (index > 0) {
             lastOffset = _this.models[index - 1].getData().globalOffset;
           }
-          let options = arr[index]['options'] || {globalOffset: lastOffset};
+          let options = arr[index]['options'] || { globalOffset: lastOffset };
 
           _this.loadModel(url, false, options).then(res => {
             index++;

@@ -2,36 +2,36 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0, user-scalable=no">
-    <title>Forge演示</title>
-    <link href="//cdn.bimgosoft.com/v2/viewers/style.min.css" rel="stylesheet"/>
-    <style>
-        *{
-            padding:0;
-            margin:0;
-            box-sizing:border-box;
-        }
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0, user-scalable=no">
+  <title>Forge演示</title>
+  <link href="//forge-lib.bimgo.net/modelderivative/v2/viewers/7.*/style.min.css" rel="stylesheet" />
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
 
-        .main{
-            height:600px;
-            max-height:600px;
-            width:100%;
-            position:relative;
-        }
-    </style>
+    .main {
+      height: 600px;
+      max-height: 600px;
+      width: 100%;
+      position: relative;
+    }
+  </style>
 </head>
 
 <body>
-<div class="main" id="app"></div>
+  <div class="main" id="app"></div>
 
 </body>
 
 </html>
 
-<script src="//cdn.bimgosoft.com/v2/viewers/viewer3D.min.js"></script>
+<script src="//forge-lib.bimgo.net/modelderivative/v2/viewers/7.*/viewer3D.js"></script>
 <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
 <script type="text/javascript" src="<%=htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
 <% } %>
@@ -40,71 +40,80 @@
 
   const seal = new Seal(document.querySelector('#app'), {
     name: '3d',
+    // docid: 'https://lmv-models.s3.amazonaws.com/toy_plane/toy_plane.svf',
     docid: 'https://filecdn.jue.sh/gyurt/L01Z01/Resource/____/3D/3D.svf',
     env: 'Local'
   });
 
   const a = seal.viewer;
 
-  seal.on('extension.markup.loaded ', res => {
-    const extension = seal.markupExtension;
-
-    const data = [
-      {parentDbId: 7952, point: {x: 63.60818296421985, y: 35.54227509921135, z: 47.94671960351229}}
-    ];
-
-    data.forEach((item, index) => {
-     extension.add(item.point, item.parentDbId,);
-    });
-
+  seal.on('extension.markup3d.loaded ', res => {
     seal.on('click', event => {
       if (event) {
-        // extension.add(event.point, event.dbId);
-      }
-
-    });
-
-    extension.addByBounds([7365, 8015])
-
-  });
-
-  // heatmap 目前根据目标生成一个平面，并在平面上生成热力图，所以只能支持目标也是一个平面。
-  seal.on('extension.heatmap.loaded', extension => {
-
-    const data = [
-      {dbId: 7952, point: {x: 79.20208951697106, y: 79.20208951697106}, value: 0.6},
-      {dbId: 7952, point: {x: 127.11547628619314, y: 16.098404182970143}, value: 1},
-      {dbId: 7952, point: {x: 83.4565267184505, y: 21.23854316716654}, value: 0.3},
-    ];
-
-    data.forEach(item => {
-      // extension.add(item.point, item.dbId, item.value);
-    });
-
-    //点击生成
-    seal.on('click', event => {
-      if (event) {
-
-         extension.add(event.point, event.dbId);
+        res.add(event.point, event.dbId)
       }
     })
-  });
+  })
+
+  // seal.on('extension.markup.loaded ', res => {
+  //   console.log('已经加载————————————')
+  //   const extension = seal.markupExtension;
+
+  //   const data = [
+  //     {parentDbId: 7952, point: {x: 63.60818296421985, y: 35.54227509921135, z: 47.94671960351229}}
+  //   ];
+
+  //   data.forEach((item, index) => {
+  //    extension.add(item.point, item.parentDbId,);
+  //   });
+
+  //   seal.on('click', event => {
+  //     if (event) {
+  //       extension.add(event.point, event.dbId);
+  //     }
+
+  //   });
+
+  //   extension.addByBounds([7365, 8015])
+
+  // });
+
+  // heatmap 目前根据目标生成一个平面，并在平面上生成热力图，所以只能支持目标也是一个平面。
+  // seal.on('extension.heatmap.loaded', extension => {
+
+  //   const data = [
+  //     {dbId: 7952, point: {x: 79.20208951697106, y: 79.20208951697106}, value: 0.6},
+  //     {dbId: 7952, point: {x: 127.11547628619314, y: 16.098404182970143}, value: 1},
+  //     {dbId: 7952, point: {x: 83.4565267184505, y: 21.23854316716654}, value: 0.3},
+  //   ];
+
+  //   data.forEach(item => {
+  //     // extension.add(item.point, item.dbId, item.value);
+  //   });
+
+  //   //点击生成
+  //   seal.on('click', event => {
+  //     if (event) {
+
+  //        extension.add(event.point, event.dbId);
+  //     }
+  //   })
+  // });
 
   seal.on('geometry.loaded', () => {
 
-    const img = new Image();
-    document.body.appendChild(img);
-    seal.getScreenShot(50, 30).then(data => {
-      img.src = data;
-    })
+    // const img = new Image();
+    // document.body.appendChild(img);
+    // seal.getScreenShot(50, 30).then(data => {
+    //   img.src = data;
+    // })
   });
 
-  seal.on('objectTree.created',()=>{
-    console.log(seal.getInstanceTree());
-  });
-    
+  // seal.on('objectTree.created',()=>{
+  //   console.log(seal.getInstanceTree());
+  // });
 
-    
+
+
 
 </script>
-
